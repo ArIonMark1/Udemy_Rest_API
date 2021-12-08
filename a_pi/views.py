@@ -9,6 +9,7 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
     UpdateModelMixin, DestroyModelMixin
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -17,7 +18,8 @@ from rest_framework.viewsets import ModelViewSet
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    http_method_names = ['get', 'put', 'post', 'delete']
+    permission_classes = IsAuthenticated, # добавление проверки на авторизацию на сайте
+    # http_method_names = ['get', 'put', 'post', 'delete']
 
     def list(self, request, *args, **kwargs):
         # notes = Note.objects.all()
