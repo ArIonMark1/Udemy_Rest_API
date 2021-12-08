@@ -1,15 +1,16 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view
+# from django.shortcuts import render
+# from rest_framework.decorators import api_view
 from notes.models import Note
 from rest_framework.response import Response
-from rest_framework import status
+# from rest_framework import status
 from .serializers import ThinNoteSerializer, NoteSerializer
-from rest_framework.views import APIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, \
-    UpdateModelMixin, DestroyModelMixin
-from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+# from rest_framework.views import APIView
+# from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, \
+#     UpdateModelMixin, DestroyModelMixin
+# from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAuthorOrReadOnly
 
 
 # Create your views here.
@@ -18,17 +19,19 @@ from rest_framework.permissions import IsAuthenticated
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = IsAuthenticated, # добавление проверки на авторизацию на сайте
+    # permission_classes = IsAuthenticated, # добавление проверки на авторизацию на сайте
+    permission_classes = IsAuthorOrReadOnly,  # пользовательские разрешения
+
     # http_method_names = ['get', 'put', 'post', 'delete']
 
     def list(self, request, *args, **kwargs):
-        # notes = Note.objects.all()
-        notes = Note.objects.filter(author=self.request.user) # отображение записей текущего пользователя
+        notes = Note.objects.all()
+        # notes = Note.objects.filter(author=self.request.user)  # отображение записей текущего пользователя
         context = {'request': request}
         serializer = ThinNoteSerializer(notes, many=True, context=context)
         return Response(serializer.data)
 
-    def perform_create(self, serializer): # подвязывание под юзера
+    def perform_create(self, serializer):  # подвязывание под юзера
         serializer.save(author=self.request.user)
 
 # =======================================================
