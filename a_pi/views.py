@@ -7,38 +7,75 @@ from .serializers import ThinNoteSerializer, NoteSerializer
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, \
     UpdateModelMixin, DestroyModelMixin
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.viewsets import ModelViewSet
 
 
 # Create your views here.
+# ======================= ViewSets =======================
 
-class NoteListView(ListModelMixin, CreateModelMixin, GenericAPIView):
-    """ Получение списка обьектов с помощью миксинов """
+class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
+    http_method_names = ['get', 'put', 'post', 'delete']
 
-    def get(self, request, *args, **kwargs):
-        self.serializer_class = ThinNoteSerializer
-        return self.list(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        notes = Note.objects.all()
+        context = {'request': request}
+        serializer = ThinNoteSerializer(notes, many=True, context=context)
+        return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    def perform_create(self, serializer): # подвязывание под юзера
+        serializer.save(author=self.request.user)
+
+# =======================================================
+# ===================== Serializers =====================
+# class NoteListView(ListCreateAPIView):
+#     queryset = Note.objects.all()
+#     serializer_class = NoteSerializer
+#
+#     def list(self, request, *args, **kwargs):
+#         """ Переопределяем сериализатор """
+#         notes = Note.objects.all()
+#         context = {'request': request}
+#         serializer = ThinNoteSerializer(notes, many=True, context=context)
+#         return Response(serializer.data)
+#
+# class NoteDetailView(RetrieveUpdateDestroyAPIView):
+#     queryset = Note.objects.all()
+#     serializer_class = NoteSerializer
 
 
-class NoteDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
-    """ Редактирование, удаление обьектов с помощью миксинов """
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
+# ==================== V2 ====================
+# class NoteListView(ListModelMixin, CreateModelMixin, GenericAPIView):
+#     """ Получение списка обьектов с помощью миксинов """
+#     queryset = Note.objects.all()
+#     serializer_class = NoteSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         self.serializer_class = ThinNoteSerializer
+#         return self.list(request, *args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ==================== V1 mixin ======================
+# class NoteDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
+#     """ Редактирование, удаление обьектов с помощью миксинов """
+#     queryset = Note.objects.all()
+#     serializer_class = NoteSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+#
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-    
 # class NoteListView(APIView):
 #     def get(self, request, format=None):
 #         notes = Note.objects.all()
@@ -54,7 +91,7 @@ class NoteDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ===============================================================================
-# ===============================================================================
+# ================================= CBV version =================================
 
 # class NoteDetailView(APIView):
 #     def get_object(self, pk):
@@ -83,6 +120,8 @@ class NoteDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 #         notes.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# ==========================================================
+# ================== functional (FBV) version ====================
 #
 #
 # @api_view(['GET', 'POST'])
@@ -98,8 +137,8 @@ class NoteDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#
+# ==============================================================================
+
 # @api_view(['GET', 'PUT', 'DELETE'])
 # def notes_details(request, pk, format=None):
 #     try:
