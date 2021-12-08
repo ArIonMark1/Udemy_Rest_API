@@ -1,20 +1,27 @@
-from rest_framework.serializers import IntegerField, CharField, Serializer, \
-    ModelSerializer, HyperlinkedIdentityField
+from rest_framework.serializers import IntegerField, \
+    CharField, Serializer, \
+    ModelSerializer, HyperlinkedIdentityField, SerializerMethodField
 from notes.models import Note
 
 
 class NoteSerializer(ModelSerializer):
+    author = SerializerMethodField(read_only=True) # запрещаем редактирование автора
+
+    def get_author(self, obj):
+        return obj.author.email
+
     class Meta:
         model = Note
-        fields = '__all__',
-
+        fields = '__all__'
 
 class ThinNoteSerializer(ModelSerializer):
     # url = HyperlinkedIdentityField(view_name='notes-detail')
 
     class Meta:
         model = Note
-        fields = 'id', 'title', 'created',
+        fields = 'id', 'title', 'updated',
+
+
 # class NoteSerializer(Serializer):
 #     id = IntegerField(read_only=True)
 #     title = CharField(required=True, max_length=255)
