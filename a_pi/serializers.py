@@ -6,7 +6,7 @@ from notes.models import Note
 class NoteSerializer(ModelSerializer):
     class Meta:
         model = Note
-        fields = '__all__',
+        fields = '__all__'
 
 
 class ThinNoteSerializer(ModelSerializer):
@@ -15,6 +15,7 @@ class ThinNoteSerializer(ModelSerializer):
     class Meta:
         model = Note
         fields = 'id', 'title', 'created',
+
 # class NoteSerializer(Serializer):
 #     id = IntegerField(read_only=True)
 #     title = CharField(required=True, max_length=255)
