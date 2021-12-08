@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EET'
 
 USE_I18N = True
 
@@ -122,8 +122,8 @@ AUTH_USER_MODEL = 'accounts.User'
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/a_pi/notes/'
-MAIN_PAGE = '/a_pi/notes/'
+# LOGIN_URL = 'a_pi/notes/'
+# MAIN_PAGE = 'a_pi/notes/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
