@@ -6,7 +6,9 @@ from rest_framework.routers import DefaultRouter
 app_name = 'a_pi'
 
 router = DefaultRouter()
+
 router.register('notes', NoteViewSet, basename='notes')
+router.register('users', UserViewSet, basename='users')
 urlpatterns = router.urls
 
 # notes_list = NoteViewSet.as_view({'get': 'list', 'post': 'create'})

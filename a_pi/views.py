@@ -3,17 +3,25 @@
 from notes.models import Note
 from rest_framework.response import Response
 # from rest_framework import status
-from .serializers import ThinNoteSerializer, NoteSerializer
+from .serializers import ThinNoteSerializer, NoteSerializer, UserSerializer
 # from rest_framework.views import APIView
 # from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, \
 #     UpdateModelMixin, DestroyModelMixin
 # from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
 # from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser
 from .permissions import IsAuthorOrReadOnly
-
+from django.contrib.auth import get_user_model
 
 # Create your views here.
+
+class UserViewSet(ModelViewSet):
+    model = get_user_model()
+    queryset = model.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = IsAdminUser,
+
 # ======================= ViewSets =======================
 
 class NoteViewSet(ModelViewSet):
