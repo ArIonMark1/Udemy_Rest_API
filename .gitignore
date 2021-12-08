@@ -1,6 +1,6 @@
 work_venv/
 .env
 .idea
-db.sqlite3
 __pycache__/
 media
+db.sqlite3
