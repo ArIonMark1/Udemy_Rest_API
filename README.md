@@ -1,0 +1,1 @@
+Append authentication for new user

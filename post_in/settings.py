@@ -122,7 +122,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 STATIC_URL = '/static/'
 
-# LOGIN_URL = 'a_pi/notes/'
+LOGIN_URL = '/'
 # MAIN_PAGE = 'a_pi/notes/'
 
 # Default primary key field type

@@ -8,7 +8,7 @@ class NoteSerializer(ModelSerializer):
     author = SerializerMethodField(read_only=True) # запрещаем редактирование автора
 
     def get_author(self, obj):
-        return obj.author.email
+        return obj.author.email # определяем вид отображения пользователя (с id на email)
 
     class Meta:
         model = Note

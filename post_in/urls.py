@@ -18,5 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('a_pi/', include('a_pi.urls', namespace='a_pi'))
+    path('', include('a_pi.urls', namespace='a_pi')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')), # добавляем вход в учетную запись пользователя
 ]
