@@ -25,6 +25,7 @@ class UserViewSet(ModelViewSet):
 # ======================= ViewSets =======================
 
 class NoteViewSet(ModelViewSet):
+    """ Список записей-блогов всех пользователей """
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     # permission_classes = IsAuthenticated, # добавление проверки на авторизацию на сайте
