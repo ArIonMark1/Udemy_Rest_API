@@ -4,8 +4,8 @@ from rest_framework.serializers import IntegerField, \
 from notes.models import Note
 from django.contrib.auth import get_user_model
 
-class UserSerializer(ModelSerializer):
 
+class UserSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         queryset = model.objects.all()
@@ -14,7 +14,9 @@ class UserSerializer(ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
         def create(self, validated_data):
+            password = validated_data.pop('password', '')
             user = self.Meta.model(**validated_data)
+            user.set_password(password)
             user.save()
             return user
 
@@ -23,17 +25,16 @@ class UserSerializer(ModelSerializer):
             return super().update(instance, validated_data)
 
 
-
-
 class NoteSerializer(ModelSerializer):
-    author = SerializerMethodField(read_only=True) # запрещаем редактирование автора
+    author = SerializerMethodField(read_only=True)  # запрещаем редактирование автора
 
     def get_author(self, obj):
-        return obj.author.email # определяем вид отображения пользователя (с id на email)
+        return obj.author.email  # определяем вид отображения пользователя (с id на email)
 
     class Meta:
         model = Note
         fields = '__all__'
+
 
 class ThinNoteSerializer(ModelSerializer):
     # url = HyperlinkedIdentityField(view_name='notes-detail')
@@ -41,7 +42,6 @@ class ThinNoteSerializer(ModelSerializer):
     class Meta:
         model = Note
         fields = 'id', 'title', 'updated',
-
 
 # class NoteSerializer(Serializer):
 #     id = IntegerField(read_only=True)

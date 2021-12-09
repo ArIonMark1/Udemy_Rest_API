@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, identify_hasher
 from django.contrib.auth.models import UserManager
 from django.db.models import EmailField, CharField, BooleanField, DateTimeField
 
@@ -97,9 +97,13 @@ class User(AbstractBaseUser):
         return self.admin
 
     def save(self, *args, **kwargs):
-
-        if not self.id and not self.staff and not self.admin:
-            self.password = make_password(self.password) # make_passwodr - импортируемая, предназначенная сделать из текстового пароля захэшированый
-        print(self.password)
+        try:
+            _alg = identify_hasher(self.password)
+        except ValueError:
+            self.password = make_password(self.password)
         super(User, self).save(*args, **kwargs)
+        # if not self.id and not self.staff and not self.admin:
+        #     self.password = make_password(self.password) # make_passwodr - импортируемая, предназначенная сделать из текстового пароля захэшированый
+        # print(self.password)
+        # super(User, self).save(*args, **kwargs)
 
